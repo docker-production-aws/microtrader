@@ -1,0 +1,25 @@
+dependencies {
+    compile project(':microtrader-common')
+    compile "io.vertx:vertx-web:$vertxVersion"
+    compile "io.vertx:vertx-circuit-breaker:$vertxVersion"
+    compile "io.vertx:vertx-sockjs-service-proxy:$vertxVersion"
+}
+
+task bower(type: Exec) {
+    workingDir "${project.projectDir}/src/main/resources/webroot"
+    commandLine "bower", "install", "--allow-root"
+}
+
+compileJava {
+    dependsOn bower
+}
+
+copyDeps {
+    dependsOn bower
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Verticle': 'com.pluralsight.dockerproductionaws.traderdashboard.DashboardVerticle'
+    }
+}

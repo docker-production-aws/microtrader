@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  test:
+    build:
+      context: ../../
+      dockerfile: docker/test/Dockerfile
+      args:
+        app_version: ${APP_VERSION}
+    command:
+      - /app/gradlew
+      - clean
+      - test
+      - shadowJar

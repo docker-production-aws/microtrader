@@ -1,0 +1,88 @@
+#### STANDARD SETTINGS ####
+
+# Filenames
+TEST_COMPOSE_FILE := docker/test/docker-compose.yml
+REL_COMPOSE_FILE := docker/release/docker-compose.yml
+
+# Docker Compose Project Names
+REL_PROJECT := $(PROJECT_NAME)$(BUILD_ID)
+TEST_PROJECT := $(REL_PROJECT)test
+
+# Use these settings to specify a custom Docker registry
+DOCKER_REGISTRY ?= docker.io
+
+# WARNING: Set DOCKER_REGISTRY_AUTH to empty for Docker Hub
+# Set DOCKER_REGISTRY_AUTH to auth endpoint for private Docker registry
+DOCKER_REGISTRY_AUTH ?=
+
+# Arguments
+NOPULL_ARG = $(findstring :nopull,$(ARGS))
+VERBOSE_ARG = $(findstring :verbose,$(ARGS))
+RELEASE_ARGS = -p $(REL_PROJECT) -f $(REL_COMPOSE_FILE) $(VERBOSE_FLAG)
+TEST_ARGS = -p $(TEST_PROJECT) -f $(TEST_COMPOSE_FILE) $(VERBOSE_FLAG)
+VERBOSE_FLAG = $(if $(VERBOSE_ARG),--verbose,)
+NOPULL_FLAG = $(if $(NOPULL_ARG),,--pull)
+
+# Set shell
+SHELL=/bin/bash -e -o pipefail
+
+# App version settings
+COMMIT_TIMESTAMP := $(shell echo $$(git log -1 --pretty='format:%cd' --date='format:%Y%m%d%H%M%S'))
+COMMIT_ID := $(shell echo $$(git rev-parse --short HEAD))
+COMMIT_TAG := $(shell echo $$(git tag --points-at HEAD))
+export APP_VERSION ?= $(COMMIT_TIMESTAMP).$(COMMIT_ID)$(if $(BUILD_ID),.$(BUILD_ID),)
+
+# Docker host settings
+DOCKER_HOST_IP := $(shell echo $$DOCKER_HOST | awk -F/ '{printf $$3}' | awk -F: '{printf $$1}')
+DOCKER_HOST_IP := $(if $(DOCKER_HOST_IP),$(DOCKER_HOST_IP),\<docker-host\>)
+
+# Cosmetics
+RED := "\e[1;31m"
+YELLOW := "\e[1;33m"
+NC := "\e[0m"
+INFO := @bash -c 'printf $(YELLOW); echo "=> $$1"; printf $(NC)' MESSAGE
+WARNING := @bash -c 'printf $(RED); echo "WARNING: $$1"; printf $(NC)' MESSAGE
+
+# Extract extra arguments
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter $(firstword $(MAKECMDGOALS)),release test clean compose dcompose))
+  ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+endif
+
+# Extract tag arguments
+ifeq ($(firstword $(MAKECMDGOALS)),$(filter $(firstword $(MAKECMDGOALS)),tag))
+  TAG_ARGS_RAW := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  ifeq ($(TAG_ARGS_RAW),)
+    $(error You must specify a tag)
+  endif
+  TAG_ARGS += $(foreach tag,$(TAG_ARGS_RAW),$(shell echo $(tag) | sed -e 's/[^a-zA-Z0-9\.\-]/_/g'))
+endif
+
+# Image and Repository Tag introspection functions
+# Syntax: $(call get_image_id,<docker-compose-environment>,<service-name>)
+# Syntax: $(call get_repo_tags,<docker-compose-environment>,<service-name>,<fully-qualified-image-name>)
+get_container_id = $$(docker-compose $(1) ps -q $(2))
+get_image_id = $$(echo $(call get_container_id,$(1),$(2)) | xargs -I ARGS docker inspect -f '{{ .Image }}' ARGS)
+filter_repo_tags = $(if $(findstring docker.io,$(1)),$(subst docker.io/,,$(1))[^[:space:]|\$$]*,$(1)[^[:space:]|\$$]*)
+get_repo_tags = $$(echo $(call get_image_id,$(1),$(2)) | xargs -I ID docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' ID | grep -oh "$(call filter_repo_tags,$(3))" | xargs)
+
+# Port introspection functions
+# Syntax: $(call get_port_mapping,<docker-compose-environment>,<service-name>,<internal-port>)
+get_raw_port_mapping = $$(docker-compose $(1) ps -q $(2) | xargs -I ID docker port ID $(3))
+get_port_mapping = $$(echo $$(IFS=':' read -r -a array <<< "$(call get_raw_port_mapping,$(1),$(2),$(3))" && echo "$${array[1]}"))
+
+# Service health functions
+# Syntax: $(call check_service_health,<docker-compose-environment>,<service-name>)
+get_service_health = $$(echo $(call get_container_id,$(1),$(2)) | xargs -I ID docker inspect -f '{{ .State.Health.Status }}' ID)
+check_service_health = { \
+  until [[ $(call get_service_health,$(1),$(2)) != starting ]]; \
+    do sleep 1; \
+  done; \
+  if [[ $(call get_service_health,$(1),$(2)) != healthy ]]; \
+    then echo $(2) failed health check; exit 1; \
+  fi; \
+}
+
+# Exit code function
+# Syntax: $(call get_exit_code,<docker-compose-environment>,<service-name>)
+get_exit_code = $$(docker-compose $(1) ps -q $(2) | xargs -I ID docker inspect -f "{{ .State.ExitCode }}" ID)
+check_exit_code = exit $(call get_exit_code,$(1),$(2))

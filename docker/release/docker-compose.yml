@@ -1,0 +1,84 @@
+version: '2'
+
+services:
+  microtrader-dashboard:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile.dashboard
+      args:
+        app_version: ${APP_VERSION}
+    dns_search: .
+    environment:
+      HTTP_PORT: ${HTTP_PORT}
+      MARKET_DATA_ADDRESS: ${MARKET_DATA_ADDRESS}   
+      PORTFOLIO_ADDRESS: portfolio                  
+      _JAVA_OPTIONS: "-Xms256m -Xmx1g"
+    ports:
+      - "${HTTP_PORT}"
+  microtrader-quote:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile.quote
+      args:
+        app_version: ${APP_VERSION}
+    dns_search: .
+    environment:
+      HTTP_ROOT: ${QUOTE_HTTP_ROOT}
+      HTTP_HOST: microtrader-quote
+      HTTP_PORT: ${HTTP_PORT}
+      MARKET_DATA_ADDRESS: ${MARKET_DATA_ADDRESS}   
+      MARKET_PERIOD: ${MARKET_PERIOD}
+    ports:
+      - "${HTTP_PORT}"
+  microtrader-portfolio:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile.portfolio
+      args:
+        app_version: ${APP_VERSION}
+    dns_search: .
+    ports:
+      - "${HTTP_PORT}"
+  microtrader-audit:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile.audit
+      args:
+        app_version: ${APP_VERSION}
+    dns_search: .
+    environment:
+      HTTP_ROOT: ${AUDIT_HTTP_ROOT}
+      HTTP_HOST: microtrader-audit
+      HTTP_PORT: ${HTTP_PORT}
+      HTTP_PUBLIC_PORT: ${HTTP_PORT}
+      JDBC_URL: jdbc:mysql://db/${DB_NAME}?useSSL=false
+      JDBC_USER: ${DB_USER}
+      JDBC_PASSWORD: ${DB_PASSWORD}
+      JDBC_DRIVERCLASS: com.mysql.jdbc.Driver
+      DB_MIGRATIONS_LOCATION: db/mysql
+      PORTFOLIO_ADDRESS: portfolio  
+    ports:
+      - "${HTTP_PORT}"
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+  specs:
+    build:
+      context: ../../
+      dockerfile: docker/release/Dockerfile.specs
+    environment:
+      QUOTE_URL: http://microtrader-quote:${HTTP_PORT}/${QUOTE_HTTP_ROOT}
+      AUDIT_URL: http://microtrader-audit:${HTTP_PORT}/${AUDIT_HTTP_ROOT}
+      DASHBOARD_URL: http://microtrader-dashboard:${HTTP_PORT}/
+      EVENT_BUS_URL: http://microtrader-dashboard:${HTTP_PORT}/eventbus/
+      JUNIT_REPORT_PATH: /reports/acceptance.xml
+      JUNIT_REPORT_STACK: 1
+    command: 
+      - "--reporter"
+      - "mocha-jenkins-reporter"

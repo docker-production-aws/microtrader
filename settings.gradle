@@ -1,0 +1,6 @@
+rootProject.name='microtrader'
+include 'microtrader-common'
+include 'microtrader-quote'
+include 'microtrader-portfolio'
+include 'microtrader-audit'
+include 'microtrader-dashboard'

@@ -1,0 +1,20 @@
+FROM alpine
+MAINTAINER Justin Menga <justin.menga@gmail.com>
+
+# Install system dependencies
+RUN apk add --no-cache bash nodejs git
+
+# Install package.json
+COPY microtrader-specs/package.json /app/
+WORKDIR /app
+
+# Install application dependencies
+RUN npm install -g mocha && \
+    npm install
+
+# Copy tests
+COPY microtrader-dashboard/src/main/resources/webroot/libs/portfolio_service-proxy.js /microtrader-dashboard/src/main/resources/webroot/libs/portfolio_service-proxy.js
+COPY microtrader-specs/test /app/test
+
+# Set mocha test runner as entrypoint
+ENTRYPOINT ["mocha"]

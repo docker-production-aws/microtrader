@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':microtrader-common')
+    compile "io.vertx:vertx-web:$vertxVersion"
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Verticle': 'com.pluralsight.dockerproductionaws.quotegenerator.MainVerticle'
+    }
+}
