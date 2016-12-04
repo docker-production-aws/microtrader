@@ -12,7 +12,7 @@ services:
       HTTP_PORT: ${HTTP_PORT}
       MARKET_DATA_ADDRESS: ${MARKET_DATA_ADDRESS}   
       PORTFOLIO_ADDRESS: portfolio                  
-      _JAVA_OPTIONS: "-Xms256m -Xmx1g"
+      JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1g"
     ports:
       - "${HTTP_PORT}"
   microtrader-quote:
