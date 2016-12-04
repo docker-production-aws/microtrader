@@ -15,6 +15,9 @@ DOCKER_REGISTRY ?= docker.io
 # Set DOCKER_REGISTRY_AUTH to auth endpoint for private Docker registry
 DOCKER_REGISTRY_AUTH ?=
 
+# Expression to login to Docker registry
+DOCKER_LOGIN_EXPRESSION ?= $$(docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH))
+
 # Arguments
 NOPULL_ARG = $(findstring :nopull,$(ARGS))
 VERBOSE_ARG = $(findstring :verbose,$(ARGS))
@@ -62,6 +65,7 @@ endif
 # Syntax: $(call get_repo_tags,<docker-compose-environment>,<service-name>,<fully-qualified-image-name>)
 get_container_id = $$(docker-compose $(1) ps -q $(2))
 get_image_id = $$(echo $(call get_container_id,$(1),$(2)) | xargs -I ARGS docker inspect -f '{{ .Image }}' ARGS)
+get_container_state = $$(echo $(call get_container_id,$(1),$(2)) | xargs -I ID docker inspect -f '$(3)' ID)
 filter_repo_tags = $(if $(findstring docker.io,$(1)),$(subst docker.io/,,$(1))[^[:space:]|\$$]*,$(1)[^[:space:]|\$$]*)
 get_repo_tags = $$(echo $(call get_image_id,$(1),$(2)) | xargs -I ID docker inspect -f '{{range .RepoTags}}{{.}} {{end}}' ID | grep -oh "$(call filter_repo_tags,$(3))" | xargs)
 
@@ -72,7 +76,7 @@ get_port_mapping = $$(echo $$(IFS=':' read -r -a array <<< "$(call get_raw_port_
 
 # Service health functions
 # Syntax: $(call check_service_health,<docker-compose-environment>,<service-name>)
-get_service_health = $$(echo $(call get_container_id,$(1),$(2)) | xargs -I ID docker inspect -f '{{ .State.Health.Status }}' ID)
+get_service_health = $$(echo $(call get_container_state,$(1),$(2),{{if .State.Running}}{{ .State.Health.Status }}{{end}}))
 check_service_health = { \
   until [[ $(call get_service_health,$(1),$(2)) != starting ]]; \
     do sleep 1; \
@@ -82,7 +86,21 @@ check_service_health = { \
   fi; \
 }
 
+# Tagging and Publishing functions
+# Syntax: $(call tag_image,<docker-compose-environment>,<service-name>,<fully-qualified-tag>)
+# Syntax: $(call publish_image,<docker-compose-environment>,<service-name>,<fully-qualified-repository>)
+tag_image = $$(echo $(call get_image_id,$(1),$(2)) | xargs -I ARG docker tag ARG $(3);)
+publish_image = { \
+	for tag in $(call get_repo_tags,$(1),$(2),$(3)); \
+		do echo $$tag | xargs -I TAG docker push TAG; \
+	done; \
+}
+
 # Exit code function
 # Syntax: $(call get_exit_code,<docker-compose-environment>,<service-name>)
-get_exit_code = $$(docker-compose $(1) ps -q $(2) | xargs -I ID docker inspect -f "{{ .State.ExitCode }}" ID)
+get_exit_code = $$(echo $(call get_container_state,$(1),$(2),{{ .State.ExitCode }}))
 check_exit_code = exit $(call get_exit_code,$(1),$(2))
+
+# Dangling image function
+# Syntax: $(call clean_dangling_images,<repository>)
+clean_dangling_images = docker images -q -f dangling=true -f label=application=$(1) | xargs -I ARGS docker rmi -f ARGS || true

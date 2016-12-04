@@ -7,7 +7,6 @@ PROJECT_NAME ?= microtrader
 ORG_NAME ?= dockerproductionaws
 REPO_NAME ?= microtrader
 TEST_REPO_NAME ?= microtrader-dev
-DOCKER_REGISTRY ?= docker.io
 TEST_DIR ?= build/test-results/junit/
 
 # Release settings
@@ -85,7 +84,8 @@ all: clean test release tag-default publish clean
 # Cleans environment
 clean: clean-test clean-release
 	${INFO} "Removing dangling images..."
-	@ docker images -q -f dangling=true -f label=application=$(REPO_NAME) | xargs -I ARGS docker rmi -f ARGS || true
+	@ $(call clean_dangling_images,$(TEST_REPO_NAME))
+	@ $(call clean_dangling_images,$(REPO_NAME))
 	${INFO} "Clean complete"
 
 clean%test:
@@ -99,12 +99,12 @@ clean%release:
 # 'make tag <tag> [<tag>...]' tags development and/or release image with specified tag(s)
 tag:
 	${INFO} "Tagging development image with tags $(TAG_ARGS)..."
-	@ $(foreach tag,$(TAG_ARGS), echo $(call get_image_id,$(TEST_ARGS),test) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME):$(tag);)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(TEST_ARGS),test,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME):$(tag));)
 	${INFO} "Tagging release images with tags $(TAG_ARGS)..."
-	@ $(foreach tag,$(TAG_ARGS), echo $(call get_image_id,$(RELEASE_ARGS),microtrader-quote) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-quote:$(tag);)
-	@ $(foreach tag,$(TAG_ARGS), echo $(call get_image_id,$(RELEASE_ARGS),microtrader-audit) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-audit:$(tag);)
-	@ $(foreach tag,$(TAG_ARGS), echo $(call get_image_id,$(RELEASE_ARGS),microtrader-portfolio) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-portfolio:$(tag);)
-	@ $(foreach tag,$(TAG_ARGS), echo $(call get_image_id,$(RELEASE_ARGS),microtrader-dashboard) | xargs -I ARG docker tag ARG $(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-dashboard:$(tag);)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-portfolio,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-dashboard,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
 	${INFO} "Tagging complete"
 
 # Tags with default set of tags
@@ -114,7 +114,7 @@ tag%default:
 # Login to Docker registry
 login:
 	${INFO} "Logging in to Docker registry $$DOCKER_REGISTRY..."
-	@ docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH)
+	@ eval $(DOCKER_LOGIN_EXPRESSION)
 	${INFO} "Logged in to Docker registry $$DOCKER_REGISTRY"
 
 # Logout of Docker registry
@@ -126,12 +126,12 @@ logout:
 # Publishes image(s) tagged using make tag commands
 publish:
 	${INFO} "Publishing development image $(call get_image_id,$(TEST_ARGS),test) to $(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME)..."
-	@ for tag in $(call get_repo_tags,$(TEST_ARGS),test,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME)); do echo $$tag | xargs -I TAG docker push TAG; done
+	@ $(call publish_image,$(TEST_ARGS),test,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME))
 	${INFO} "Publishing release images to $(DOCKER_REGISTRY)/$(ORG_NAME)..."
-	@ for tag in $(call get_repo_tags,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-quote); do echo $$tag | xargs -I TAG docker push TAG; done
-	@ for tag in $(call get_repo_tags,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-audit); do echo $$tag | xargs -I TAG docker push TAG; done
-	@ for tag in $(call get_repo_tags,$(RELEASE_ARGS),microtrader-portfolio,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-portfolio); do echo $$tag | xargs -I TAG docker push TAG; done
-	@ for tag in $(call get_repo_tags,$(RELEASE_ARGS),microtrader-dashboard,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-dashboard); do echo $$tag | xargs -I TAG docker push TAG; done
+	@ $(call publish_image,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-quote)
+	@ $(call publish_image,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-audit)
+	@ $(call publish_image,$(RELEASE_ARGS),microtrader-portfolio,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-portfolio)
+	@ $(call publish_image,$(RELEASE_ARGS),microtrader-dashboard,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-dashboard)
 	${INFO} "Publish complete"
 
 # Executes docker-compose commands in release environment
