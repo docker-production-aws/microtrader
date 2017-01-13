@@ -114,7 +114,7 @@ tag%default:
 # Login to Docker registry
 login:
 	${INFO} "Logging in to Docker registry $$DOCKER_REGISTRY..."
-	@ eval $(DOCKER_LOGIN_EXPRESSION)
+	@ $(DOCKER_LOGIN_EXPRESSION)
 	${INFO} "Logged in to Docker registry $$DOCKER_REGISTRY"
 
 # Logout of Docker registry
