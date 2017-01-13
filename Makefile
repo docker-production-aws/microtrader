@@ -125,8 +125,6 @@ logout:
 
 # Publishes image(s) tagged using make tag commands
 publish:
-	${INFO} "Publishing development image $(call get_image_id,$(TEST_ARGS),test) to $(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME)..."
-	@ $(call publish_image,$(TEST_ARGS),test,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME))
 	${INFO} "Publishing release images to $(DOCKER_REGISTRY)/$(ORG_NAME)..."
 	@ $(call publish_image,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-quote)
 	@ $(call publish_image,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-audit)
