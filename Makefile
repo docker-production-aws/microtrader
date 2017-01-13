@@ -101,10 +101,10 @@ tag:
 	${INFO} "Tagging development image with tags $(TAG_ARGS)..."
 	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(TEST_ARGS),test,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(TEST_REPO_NAME):$(tag));)
 	${INFO} "Tagging release images with tags $(TAG_ARGS)..."
-	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
-	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
-	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-portfolio,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
-	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-dashboard,$(DOCKER_REGISTRY)/$(ORG_NAME)/$(REPO_NAME):$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-quote,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-quote:$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-audit,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-audit:$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-portfolio,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-portfolio:$(tag));)
+	@ $(foreach tag,$(TAG_ARGS),$(call tag_image,$(RELEASE_ARGS),microtrader-dashboard,$(DOCKER_REGISTRY)/$(ORG_NAME)/microtrader-dashboard:$(tag));)
 	${INFO} "Tagging complete"
 
 # Tags with default set of tags
