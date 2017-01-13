@@ -16,7 +16,7 @@ DOCKER_REGISTRY ?= docker.io
 DOCKER_REGISTRY_AUTH ?=
 
 # Expression to login to Docker registry
-DOCKER_LOGIN_EXPRESSION ?= $$(docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH))
+DOCKER_LOGIN_EXPRESSION ?= docker login -u $$DOCKER_USER -p $$DOCKER_PASSWORD $(DOCKER_REGISTRY_AUTH)
 
 # Arguments
 NOPULL_ARG = $(findstring :nopull,$(ARGS))
