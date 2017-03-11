@@ -11,7 +11,7 @@ task annotationProcessing(type: JavaCompile, group: 'build') {
     options.compilerArgs = [
             "-proc:only",
             "-processor", "io.vertx.codegen.CodeGenProcessor",
-            "-AoutputDirectory=${project.projectDir}/src/main"
+            "-Acodegen.output=${project.projectDir}/src/main"
     ]
 }
 
