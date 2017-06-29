@@ -2,7 +2,7 @@ FROM alpine
 MAINTAINER Justin Menga <justin.menga@gmail.com>
 
 # Install system dependencies
-RUN apk add --no-cache bash nodejs git
+RUN apk add --no-cache bash nodejs nodejs-npm git
 
 # Install package.json
 COPY microtrader-specs/package.json /app/

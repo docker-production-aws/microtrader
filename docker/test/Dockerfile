@@ -5,7 +5,7 @@ LABEL application=microtrader-dev
 # Install system dependencies
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories && \
     apk update && \
-    apk add --no-cache bash libstdc++ nodejs git && \
+    apk add --no-cache bash libstdc++ nodejs nodejs-npm git && \
     npm install bower -g
 
 # Install common dependencies
