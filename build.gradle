@@ -14,7 +14,7 @@ allprojects {
   }
 
   ext {
-    vertxVersion = '3.4.0'
+    vertxVersion = '3.4.2'
     commitTimestamp = {
       return "git log -1 --pretty=format:%cd --date=format:%Y%m%d%H%M%S".execute().text.trim()
     }
