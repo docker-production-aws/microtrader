@@ -3,8 +3,8 @@ dependencies {
     compile "io.vertx:vertx-web:$vertxVersion"
     compile "io.vertx:vertx-jdbc-client:$vertxVersion"
     compile "org.hsqldb:hsqldb:2.3.3"
-    compile "mysql:mysql-connector-java:5.1.39"
-    compile "org.flywaydb:flyway-core:4.0.3"
+    compile "mysql:mysql-connector-java:6.0.6"
+    compile "org.flywaydb:flyway-core:4.2.0"
 }
 
 shadowJar {
