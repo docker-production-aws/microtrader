@@ -1,7 +1,7 @@
 plugins {
   id 'application'
   id 'java'
-  id 'com.github.johnrengelman.shadow' version '1.2.3'
+  id 'com.github.johnrengelman.shadow' version '2.0.1'
 }
 
 allprojects {
@@ -82,5 +82,5 @@ configure(subprojects - project(':microtrader-common')) {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.1'
+  gradleVersion = '4.2'
 }
