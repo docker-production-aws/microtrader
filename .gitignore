@@ -6,5 +6,8 @@ shippable
 .idea
 .vertx
 .env
+.classpath
+.project
+.settings
 *.iml
 audit-db*
