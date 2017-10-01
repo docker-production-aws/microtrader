@@ -37,7 +37,7 @@ export APP_VERSION ?= $(COMMIT_TIMESTAMP).$(COMMIT_ID)$(if $(BUILD_ID),.$(BUILD_
 
 # Docker host settings
 DOCKER_HOST_IP := $(shell echo $$DOCKER_HOST | awk -F/ '{printf $$3}' | awk -F: '{printf $$1}')
-DOCKER_HOST_IP := $(if $(DOCKER_HOST_IP),$(DOCKER_HOST_IP),\<docker-host\>)
+DOCKER_HOST_IP := $(if $(DOCKER_HOST_IP),$(DOCKER_HOST_IP),localhost)
 
 # Cosmetics
 RED := "\e[1;31m"
