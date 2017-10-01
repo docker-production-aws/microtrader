@@ -30,9 +30,9 @@ NOPULL_FLAG = $(if $(NOPULL_ARG),,--pull)
 SHELL=/bin/bash -e -o pipefail
 
 # App version settings
-COMMIT_TIMESTAMP := $(shell echo $$(git log -1 --pretty='format:%cd' --date='format:%Y%m%d%H%M%S'))
-COMMIT_ID := $(shell echo $$(git rev-parse --short HEAD))
-COMMIT_TAG := $(shell echo $$(git tag --points-at HEAD))
+COMMIT_TIMESTAMP := $(shell echo $$(git log -1 --pretty='format:%cd' --date='format:%Y%m%d%H%M%S' 2>/dev/null))
+COMMIT_ID := $(shell echo $$(git rev-parse --short HEAD 2>/dev/null))
+COMMIT_TAG := $(shell echo $$(git tag --points-at HEAD 2>/dev/null))
 export APP_VERSION ?= $(COMMIT_TIMESTAMP).$(COMMIT_ID)$(if $(BUILD_ID),.$(BUILD_ID),)
 
 # Docker host settings
