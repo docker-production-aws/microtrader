@@ -12,7 +12,8 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositori
 COPY gradle /app/gradle
 COPY build.gradle settings.gradle gradlew /app/
 WORKDIR /app/
-RUN ./gradlew copyDeps
+RUN chmod +x gradlew && \
+    ./gradlew copyDeps
 
 # Install module dependencies
 COPY microtrader-audit/build.gradle /app/microtrader-audit/
