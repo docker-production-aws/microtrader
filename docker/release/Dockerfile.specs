@@ -17,4 +17,4 @@ COPY microtrader-dashboard/src/main/resources/webroot/libs/portfolio_service-pro
 COPY microtrader-specs/test /app/test
 
 # Set mocha test runner as entrypoint
-ENTRYPOINT ["mocha"]
+ENTRYPOINT ["mocha", "--exit"]

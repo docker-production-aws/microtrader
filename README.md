@@ -270,7 +270,7 @@ microtrader-specs$ npm install -g mocha
 microtrader-specs$ npm install 
 ...
 ...
-microtrader-specs$ mocha
+microtrader-specs$ mocha --exit
 
   Trader Dashboard Frontend
     ✓ should return a 200 OK response

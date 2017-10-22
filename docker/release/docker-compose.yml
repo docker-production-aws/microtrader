@@ -79,6 +79,6 @@ services:
       EVENT_BUS_URL: http://microtrader-dashboard:${HTTP_PORT}/eventbus/
       JUNIT_REPORT_PATH: /reports/acceptance.xml
       JUNIT_REPORT_STACK: 1
-    command: 
+    command:
       - "--reporter"
       - "mocha-jenkins-reporter"
