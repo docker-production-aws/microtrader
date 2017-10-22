@@ -65,7 +65,7 @@ public class PortfolioServiceVertxEBProxy implements PortfolioService {
 
   public void getPortfolio(Handler<AsyncResult<Portfolio>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -82,7 +82,7 @@ public class PortfolioServiceVertxEBProxy implements PortfolioService {
 
   public void buy(int amount, JsonObject quote, Handler<AsyncResult<Portfolio>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -101,7 +101,7 @@ public class PortfolioServiceVertxEBProxy implements PortfolioService {
 
   public void sell(int amount, JsonObject quote, Handler<AsyncResult<Portfolio>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -120,7 +120,7 @@ public class PortfolioServiceVertxEBProxy implements PortfolioService {
 
   public void evaluate(Handler<AsyncResult<Double>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
