@@ -16,6 +16,11 @@ phases:
       - make release
       - make tag:default
       - make publish
+      - make version > build/version.json
   post_build:
     commands:
       - make login
+
+artifacts:
+  files:
+    - build/version.json
