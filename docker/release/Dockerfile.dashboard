@@ -1,4 +1,4 @@
-FROM dockerproductionaws/microtrader-base
+FROM 543279062384.dkr.ecr.us-west-2.amazonaws.com/dockerproductionaws/microtrader-base
 MAINTAINER Justin Menga <justin.menga@gmail.com>
 LABEL application.component=microtrader-dashboard
 HEALTHCHECK --interval=3s --retries=20 CMD curl -fs http://localhost:${HTTP_PORT:-8000}/
