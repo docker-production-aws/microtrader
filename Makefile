@@ -32,7 +32,7 @@ include Makefile.settings
 
 # Prints version
 version:
-	@ echo $(APP_VERSION)
+	@ echo '{"Version": "$(APP_VERSION)"}'
 
 # Runs unit and integration tests
 # Pulls images and base images by default
