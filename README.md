@@ -627,7 +627,7 @@ The following provides links to commits in this repository that represent import
 
 - [Running Docker Applications Using the EC2 Container Service](https://github.com/docker-production-aws/microtrader/tree/running-docker-applications-using-ecs) - this commit represents the state of the repository once you have completed the **Running Docker Applications Using the EC2 Container Service** module.
 
-- [Continuous Delivery Using CodePipeline](https://github.com/docker-production-aws/microtrader-base/tree/continuous-delivery-codepipeline) - this commit represents the state of the repository once you have completed the **Continuous Delivery Using CodePipeline** module.
+- [Continuous Delivery Using CodePipeline](https://github.com/docker-production-aws/microtrader/tree/continuous-delivery-codepipeline) - this commit represents the state of the repository once you have completed the **Continuous Delivery Using CodePipeline** module.
 
 ## Errata
 
