@@ -11,6 +11,16 @@ The application is based upon the excellent [Vert.x Microservices Workshop](http
 - Some of the individual microservices have been refactored to be more resilient to failure
 - Addition of unit/integration tests and acceptance tests
 
+## Contents
+
+- [Application Architecture](#application-architecture)
+- [Quick Start](#quick-start)
+- [Docker Workflow](#docker-workflow)
+- [Environment Configuration Settings](#environment-configuration-settings)
+- [Branches](#branches)
+- [Repository Timeline](#repository-timeline)
+- [Errata](#errata)
+
 ## Application Architecture
 
 The application consists of four Microservices that collectively comprise a simple fictitious stock trading application:
@@ -588,3 +598,37 @@ The following table lists environment variables that configure clustering settin
 | CLUSTER_AWS_IAM_ROLE   | DEFAULT         | Specifies an IAM role with appropriate privileges to query the EC2 API and find other cluster instances based upon the CLUSTER_AWS_TAG_KEY and CLUSTER_AWS_TAG_VALUE configuration.  The default value of "DEFAULT" specifies to use the EC2 IAM Instance Profile and associated IAM role. |
 | CLUSTER_AWS_TAG_KEY    | hazelcast:group | The value of the tag key to search for when querying the EC2 API for other cluster members                                                                                                                                                                                                 |
 | CLUSTER_AWS_TAG_VALUE  | microtrader     | The value of the tag value to search for when querying the EC2 API for other cluster members                                                                                                                                                                                               |
+
+## Branches
+
+This repository contains two branches:
+
+- [`master`](https://github.com/docker-production-aws/microtrader/tree/master) - represents the initial starting state of the repository as viewed in the course.
+
+- [`final`](https://github.com/docker-production-aws/microtrader/tree/final) - represents the final state of the repository after completing all configuration tasks as described in the course material.
+
+> The `final` branch is provided as a convenience in the case you get stuck, or want to avoid manually typing out large configuration files.  In most cases however, you should attempt to configure this repository by following the course material.
+
+To clone this repository and checkout a branch you can simply use the following commands:
+
+```
+$ git clone https://github.com/docker-production-aws/packer-ecs.git
+...
+...
+$ git checkout final
+Switched to branch 'final'
+$ git checkout master
+Switched to branch 'master'
+```
+
+## Repository Timeline
+
+The following provides links to commits in this repository that represent important milestones in the course material:
+
+- [Running Docker Applications Using the EC2 Container Service](https://github.com/docker-production-aws/microtrader/tree/running-docker-applications-using-ecs) - this commit represents the state of the repository once you have completed the **Running Docker Applications Using the EC2 Container Service** module.
+
+- [Continuous Delivery Using CodePipeline](https://github.com/docker-production-aws/microtrader-base/tree/continuous-delivery-codepipeline) - this commit represents the state of the repository once you have completed the **Continuous Delivery Using CodePipeline** module.
+
+## Errata
+
+No known issues.
