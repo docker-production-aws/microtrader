@@ -631,4 +631,4 @@ The following provides links to commits in this repository that represent import
 
 ## Errata
 
-No known issues.
+See [issues](https://github.com/docker-production-aws/microtrader/issues?utf8=✓&q=is%3Aissue)
