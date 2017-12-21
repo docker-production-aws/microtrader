@@ -78,7 +78,7 @@ public class AuditVerticleTest {
             context.assertEquals(response.statusCode(), 200);
             response.bodyHandler(buffer -> {
                 JsonArray body = buffer.toJsonArray();
-                context.assertEquals(body.size(), 3);
+                context.assertTrue(body.size() >= 3);
                 async.complete();
             });
         }).end();
@@ -101,7 +101,7 @@ public class AuditVerticleTest {
                     List<JsonObject> operations = set.getRows().stream()
                             .map(json -> new JsonObject(json.getString("OPERATION")))
                             .collect(Collectors.toList());
-                    context.assertEquals(operations.size(), 3);
+                    context.assertTrue(operations.size() >= 3);
                     connection.close();
                     async.complete();
                 });
