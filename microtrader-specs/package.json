@@ -15,7 +15,7 @@
     "chai-json-schema": "1.4.0",
     "mocha": "2.5.3",
     "mocha-jenkins-reporter": "0.1.9",
-    "superagent": "1.8.4",
+    "superagent": "3.7.0",
     "superagent-promise": "1.1.0",
     "vertx3-eventbus-client": "3.5.0",
     "wait-until": "0.0.2"
