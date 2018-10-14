@@ -14,7 +14,7 @@ allprojects {
   }
 
   ext {
-    vertxVersion = '3.5.0'
+    vertxVersion = '3.5.4'
     commitTimestamp = {
       return "git log -1 --pretty=format:%cd --date=format:%Y%m%d%H%M%S".execute().text.trim()
     }
@@ -82,5 +82,5 @@ configure(subprojects - project(':microtrader-common')) {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '4.2'
+  gradleVersion = '4.10.2'
 }
