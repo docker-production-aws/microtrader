@@ -5,7 +5,7 @@
     "jquery": "2.2.3",
     "bootstrap": "3.3.6",
     "sockjs": "0.3.4",
-    "vertx3-eventbus-client": "3.5.0",
+    "vertx3-eventbus-client": "3.7.0",
     "Chart.js": "1.1.1"
   }
 }
