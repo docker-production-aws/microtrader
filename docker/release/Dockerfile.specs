@@ -9,7 +9,7 @@ COPY microtrader-specs/package.json /app/
 WORKDIR /app
 
 # Install application dependencies
-RUN npm install -g mocha && \
+RUN npm install -g mocha@5.2.0 && \
     npm install
 
 # Copy tests
