@@ -8,16 +8,14 @@
 ++++
 '''
 
-[cols=">25%,^25%,50%"]
+[cols=">25%,25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[cash]]`cash`|`Number (double)`|
-+++
+|[[cash]]`@cash`|`Number (double)`|+++
 Sets the available cash. Method used by the converter.
 +++
-|[[shares]]`shares`|`Number (Integer)`|
-+++
+|[[shares]]`@shares`|`Number (Integer)`|+++
 Sets the owned shares. Method used by the converter.
 +++
 |===
